@@ -17,7 +17,7 @@ def main():
     parser.add_argument('-i', '--input', type=str, required=True)
     args = parser.parse_args()
     img = load(args.input)
-    print(img.shape)
+    print(np.all(img[:,:,3] == 255))
     print('\n'.join(map(str, solve(img))))
 
 if __name__ == '__main__': main()
