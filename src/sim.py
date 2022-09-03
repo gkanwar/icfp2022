@@ -42,6 +42,11 @@ class Block:
         self.x = x
         self.y = y
         self.buf = buf
+    def __str__(self):
+        ex = self.x + self.buf.shape[0]
+        ey = self.y + self.buf.shape[1]
+        return f'({self.x},{self.y},{ex},{ey})'
+    __repr__ = __str__
 
 class State:
     def __init__(self, width, height, blocks):
@@ -134,11 +139,11 @@ class State:
         ori = move.orientation
         cost = compute_cost(LINE_CUT_COST, size(block), self.width, self.height)
         assert ori in ['x', 'y']
-        if ori == 'y' and move.pos <= block.y or move.pos >= block.y + block.buf.shape[1]:
+        if ori == 'y' and (move.pos <= block.y or move.pos >= block.y + block.buf.shape[1]):
             raise ExecutionError(
                 f'Line cut at {move.pos} out of bounds '
                 f'({block.y}, {block.y+block.buf.shape[1]})', move.meta)
-        if ori == 'x' and move.pos <= block.x or move.pos >= block.x + block.buf.shape[0]:
+        if ori == 'x' and (move.pos <= block.x or move.pos >= block.x + block.buf.shape[0]):
             raise ExecutionError(
                 f'Line cut at {move.pos} out of bounds '
                 f'({block.x}, {block.x+block.buf.shape[0]})', move.meta)
