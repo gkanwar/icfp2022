@@ -67,7 +67,7 @@ def draw_rect(rect, block_idx, global_idx):
             replace_bid(tok)
             return f"{bid}.0" if kind == 'top_left' else f"{bid}.1"
         elif y_edge:
-            ret.append(f"cut [{bid}] [x] {link_to_str(x)}")
+            ret.append(f"cut [{bid}] [x] {line_to_str(x)}")
             tok = make_merge_token()
             merge_stack.append([f"{bid}.0", f"{bid}.1", tok])
             replace_bid(tok)
@@ -112,17 +112,7 @@ def draw_rect(rect, block_idx, global_idx):
 
     return ret, global_idx
 
-    
-
-def main(argv):
-    svg_file = argv[0]
-    with open(svg_file) as f:
-        svg = svgelements.SVG.parse(f)
-
-    rects = flatten(svg)
-    # print(rects)
-
-
+def draw_rects(rects):
     cmds = []
     if rects[0].width == 400:
         cmds.append(f"color [0] {color_to_str(rects[0].fill)}")
@@ -134,7 +124,19 @@ def main(argv):
         new_cmds, global_idx = draw_rect(rect, block_idx, global_idx)
         block_idx = global_idx
         cmds.extend(new_cmds)
+
+    return cmds
     
+
+def main(argv):
+    svg_file = argv[0]
+    with open(svg_file) as f:
+        svg = svgelements.SVG.parse(f)
+
+    rects = flatten(svg)
+    # print(rects)
+
+    cmds = draw_rects(rects)
     print("\n".join(cmds))
 
 
