@@ -24,6 +24,7 @@ def get_best_submissions():
         pid = sub['problem_id']
         sid = sub['id']
         score = sub['score']
+        if sub['status'] != 'SUCCEEDED': continue
         if pid not in best_by_pid or best_by_pid[pid]['score'] > score:
             best_by_pid[pid] = sub
     return best_by_pid
@@ -57,8 +58,9 @@ def summary():
 def generate_best_report(prefix):
     best_subs = get_best_submissions()
     for pid,sub in best_subs.items():
+        print(f'best sub {sub}')
         url = get_submission_url(sub['id'])
-        r = requests.get(url)
+        r = requests.get(url, timeout=1)
         r.raise_for_status()
         with open(prefix + f'/{pid}_code.isl', 'wb') as f:
             f.write(r.content)
