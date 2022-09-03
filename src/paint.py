@@ -28,12 +28,21 @@ def load(fname):
     img = Image.open(fname)
     return np.flip(np.swapaxes(np.asarray(img.convert("RGBA")), 0, 1), axis=1)
 
+def save(arr, fname):
+    img = Image.fromarray(np.swapaxes(np.flip(arr, axis=1), 0, 1), mode='RGBA')
+    img.save(fname)
+
 def optimize_color(arr):
     f = lambda x: ALPHA * np.sum(np.sqrt(np.sum((arr - x)**2, axis=-1)))
-    x0 = np.array([127]*NCHAN)
+    x0 = np.array([127.0]*NCHAN)
     res = sp.optimize.minimize(f, x0, method='CG', tol=0.01)
     cost = f(res.x)
     return res.x, cost
+
+def diff_cost(arr1, arr2):
+    arr1 = arr1.astype(int)
+    arr2 = arr2.astype(int)
+    return ALPHA * np.sum(np.sqrt(np.sum((arr1 - arr2)**2, axis=-1)))
 
 class Color:
     def __init__(self, r, g, b, a):
@@ -163,7 +172,7 @@ def solve(img, orientation, bleed):
     tot_cost = 0
     for bi in range(NBLOCKS):
         for bj in range(NBLOCKS):
-            cij, cost = optimize_color(blocked[bi,bj])
+            cij, cost = optimize_color(blocked[bi,bj].astype(np.float64))
             cij = np.clip(np.around(cij).astype(int), 0, 255)
             rects.append(Rect(bi*bx, bj*by, bx, by, cij))
             # eprint(rects[-1], cost)
