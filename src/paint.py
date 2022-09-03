@@ -131,14 +131,14 @@ def cheap_grid(x, y, bx, by, color_blocks, *, bid, gid, ori, bleed):
         next_side = '1'
     else:
         next_side = '0'
-    for i in range(1, NA):
+    for i in range(1, NA-bleed[0]):
         cmds.append(f'cut [{bid}] [{oA}] [{i*bA}]')
         ci0 = color_blocks[make_ind(i)]
         cmds.append(f'color [{bid}.1] {color_to_str(ci0)}')
         cmds.append(f'merge [{bid}.0] [{bid}.1]')
         bid = str(gid+1)
         gid += 1
-    if NB > 1+bleed:
+    if NB > 1+bleed[1]:
         cmds.append(f'cut [{bid}] [{oB}] [{next_b}]')
         bid = f'{bid}.{next_side}'
         cmds.extend(cheap_grid(
@@ -200,13 +200,14 @@ def main():
     parser.add_argument('-i', '--input', type=str, required=True)
     parser.add_argument('-N', '--n_blocks', type=int, default=16)
     parser.add_argument('-O', '--orientation', type=str, default='vertA')
-    parser.add_argument('--bleed', type=int, default=0)
+    parser.add_argument('--bleed_A', type=int, default=0, help='bleed A pixels per raster row')
+    parser.add_argument('--bleed_B', type=int, default=0, help='bleed the last B raster rows')
     args = parser.parse_args()
     global NBLOCKS
     NBLOCKS = args.n_blocks
     img = load(args.input)
     # print(np.all(img[:,:,3] == 255))
-    cmds = solve(img, args.orientation, args.bleed)
+    cmds = solve(img, args.orientation, (args.bleed_A, args.bleed_B))
     print('\n'.join(cmds))
 
 if __name__ == '__main__': main()
