@@ -30,5 +30,8 @@ def submit_file(fname, *, num):
     
 
 if __name__ == '__main__':
+    tot_score = 0
     for sub in get_best_results():
         print(f'{sub["problem_id"]} ({sub["problem_name"]}): {sub["min_cost"]}')
+        tot_score += sub["min_cost"]
+    print(f'== Total: {tot_score} ==')
