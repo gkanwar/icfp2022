@@ -20,6 +20,7 @@ def color_to_str(x):
 
 ALPHA = 0.005
 NCHAN = 4
+NBLOCKS = 0
 # NBLOCKS_LOG2 = 4
 # NBLOCKS = 2**NBLOCKS_LOG2
 # NBLOCKS = 16

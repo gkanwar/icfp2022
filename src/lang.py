@@ -135,11 +135,16 @@ def parse_line(line, *, meta):
     else:
         raise ParseError('Invalid move.', meta)
 
-def parse_program(s):
+
+def parse_lines(lines):
     moves = []
-    for i,line in enumerate(s.split('\n')):
+    for i,line in enumerate(lines):
         meta = {'lineno': i+1, 'line': line}
         move = parse_line(line, meta=meta)
         if move is not None:
             moves.append(move)
     return moves
+
+
+def parse_program(s):
+    return parse_lines(s.split('\n'))

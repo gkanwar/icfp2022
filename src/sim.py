@@ -66,7 +66,7 @@ class State:
             raise ExecutionError(f'Invalid color {color}', meta)
         if not all(map(lambda x: 0 <= x <= 255, color)):
             raise ExecutionError(f'Invalid color {color}', meta)
-        
+
 
     def get_next_bid(self):
         self.gid += 1
@@ -225,9 +225,7 @@ class State:
 def run_program(state, moves):
     tot_cost = 0
     for move in moves:
-        print('Applying', move)
         cost = state.apply(move)
-        print('... cost', cost)
         tot_cost += cost
     return {
         'output': state.render(),
